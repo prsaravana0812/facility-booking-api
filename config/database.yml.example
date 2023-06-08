@@ -1,0 +1,24 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  # For details on connection pooling, see Rails configuration guide
+  # https://guides.rubyonrails.org/configuring.html#database-pooling
+  host: <%= ENV.fetch("SCHEDULAR_APP_DATABASE_HOST") %>
+  port: 5432
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  database: <%= ENV.fetch("SCHEDULAR_APP_DATABASE") %>
+  username: <%= ENV.fetch("SCHEDULAR_APP_DATABASE_USERNAME") %>
+  password: <%= ENV.fetch("SCHEDULAR_APP_DATABASE_PASSWORD") %>
+
+test:
+  <<: *default
+  database: schedular_app_api_test
+
+production:
+  <<: *default
+  database: <%= ENV.fetch("SCHEDULAR_APP_DATABASE") %>
+  username: <%= ENV.fetch("SCHEDULAR_APP_DATABASE_USERNAME") %>
+  password: <%= ENV.fetch("SCHEDULAR_APP_DATABASE_PASSWORD") %>
