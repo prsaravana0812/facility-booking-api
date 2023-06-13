@@ -1,9 +1,11 @@
 class Api::V1::EventsController < ApplicationController
+  before_action :authenticate_request
   before_action :set_event, only: %i[ show update destroy ]
   before_action :validate_event_overlap, only: %i[ create update ]
 
   def index
-    events = Event.current_events(params[:calendar_date])
+    calendar_date = params[:calendar_date].present? ? params[:calendar_date] : Time.now.strftime("%d/%m/%Y")
+    events = Event.current_events(calendar_date, current_user.id)
     return response_success(200, "Events are empty") unless events.present?
     response_success(200, "Events are found", ActiveModelSerializers::SerializableResource.new(events, each_serializer: EventSerializer))
   end
@@ -47,7 +49,7 @@ class Api::V1::EventsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def event_params
-      params.require(:event).permit(:event_name, :start_time, :end_time, :description, :resource, :person_name)
+      params.require(:event).permit(:event_name, :start_time, :end_time, :description, :resource, :person_name).merge(user: current_user)
     end
 
     def validate_event_overlap

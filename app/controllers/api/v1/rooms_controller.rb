@@ -1,4 +1,5 @@
 class Api::V1::RoomsController < ApplicationController
+  before_action :authenticate_request
   before_action :set_room, only: %i[ show update destroy ]
 
   def index

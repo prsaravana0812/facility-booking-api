@@ -5,8 +5,10 @@ Rails.application.routes.draw do
   # root "articles#index"
   namespace :api, as: nil do
     namespace :v1, as: nil do |version|
-      resources :events
+      devise_for :users, controllers: { sessions: "api/v1/sessions" }, defaults: { format: :json }
+
       resources :rooms
+      resources :events
     end
   end
 
